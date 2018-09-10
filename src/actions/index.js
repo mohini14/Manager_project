@@ -1,7 +1,12 @@
 
 import firebase from 'firebase';
-import {EMAIL_CHANGED , PASSWORD_CHANGE} from './types';
+import { EMAIL_CHANGED, 
+    PASSWORD_CHANGE, 
+    LOGIN_USER_SUCCESS,
+     LOGIN_USER_FAIL,
+    LOGIN_USER } from './types';
 import ReduxThunk from 'redux-thunk';
+
 export const emailChanged = (text) => {
     return ({
         type: EMAIL_CHANGED,
@@ -17,11 +22,26 @@ export const passwordChange = (text) => {
     });
 };
 
-export const loginUser = ({email, password}) => {
-return (dispatch) => {
-    firebase.auth().signInWithEmailAndPassword(email, password).
-    then(user => {
-        dispatch({type : 'LOGIN_USER_SUCCESS' , payload : user});
-    });
+export const loginUser = ({ email, password }) => {
+    return (dispatch) => {
+        dispatch({type : LOGIN_USER});
+
+
+        firebase.auth().signInWithEmailAndPassword(email, password).
+            then(user => loginUserSuccess(dispatch, user)).catch(() => {
+                firebase.auth().createUserWithEmailAndPassword(email, password).then(
+                    user => loginUserSuccess(dispatch, user)).catch((error) =>
+                     loginUserFailed(dispatch))
+            });
+    };
 };
+
+const loginUserFailed = (dispatch) => {
+    dispatch({ type: LOGIN_USER_FAIL })
+};
+const loginUserSuccess = (dispatch, user) => {
+    dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: user
+    });
 };
