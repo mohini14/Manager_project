@@ -5,11 +5,14 @@ import reducers from './reducers';
 import LoginForm from './components/LoginForm'
 import ReduxThunk from 'redux-thunk';
 import Router from './Router';
-
+import { YellowBox } from 'react-native';
 class App extends Component {
 
     componentWillMount() {
 
+        YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
+
+        
         const firebase = require("firebase");
 
         // Initialize Firebase
