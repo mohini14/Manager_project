@@ -1,47 +1,42 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Card, CardSection, TextInput, Button } from './common';
-
+import { Card, CardSection, Button } from './common';
+import { connect } from 'react-redux';
+import { employeeUpdate, employeeCreate } from '../actions';
+import EmployeeForm from './EmployeeForm';
 
 class EmployeeCreate extends Component {
+     onSubmitButtonPressed() {
+        const { name, phone, shift } = this.props;
+        this.props.employeeCreate({ name, phone, shift: shift || 'Monday' });
+    }
+
 
     render() {
+        console.log("the create" ,this.props);
         return (
             <Card>
+               <EmployeeForm {...this.props}/>
                 <CardSection>
-                    <TextInput
-                        style={{
-                            flex: 1,
-                            height: 40
-                        }}
-                        label="Name"
-                        placeholder="Jane"></TextInput>
-                </CardSection>
-                <CardSection>
-                    <TextInput
-                        style={{
-                            flex: 1,
-                            height: 40
-                        }}
-                        label="Phone"
-                        placeholder="2222222222"></TextInput>
-                </CardSection>
-                <CardSection>
-                    <TextInput
-                        style={{
-                            flex: 1,
-                            height: 40
-                        }}
-                        label="Name"
-                        placeholder="Jane"></TextInput>
-                </CardSection>
-
-                <CardSection>
-                    <Button>Create</Button>
+                    <Button
+                        onPress={this.onSubmitButtonPressed.bind(this)}>Create</Button>
                 </CardSection>
             </Card>
         );
     }
 }
 
-export default EmployeeCreate;
+
+
+const mapStateToProps = (state) => {
+
+    return{
+        name : state.employeeUpdate.name,
+        phone : state.employeeUpdate.phone,
+        shift : state.employeeUpdate.shift
+    };
+
+};
+
+export default connect(mapStateToProps, {
+    employeeUpdate, employeeCreate
+})(EmployeeCreate);

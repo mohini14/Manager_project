@@ -6,13 +6,23 @@ import LoginForm from './components/LoginForm'
 import ReduxThunk from 'redux-thunk';
 import Router from './Router';
 import { YellowBox } from 'react-native';
+import _ from 'lodash';
+
+
 class App extends Component {
 
     componentWillMount() {
 
         YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
-        
+          YellowBox.ignoreWarnings(['Setting a timer']);
+        const _console = _.clone(console);
+        console.warn = message => {
+            if (message.indexOf('Setting a timer') <= -1) {
+                _console.warn(message);
+            }
+        };
+
         const firebase = require("firebase");
 
         // Initialize Firebase
@@ -31,7 +41,7 @@ class App extends Component {
         return (
             <Provider store={createStore(reducers, {},
                 applyMiddleware(ReduxThunk))}>
-            <Router/>
+                <Router />
             </Provider>
         );
     }
